@@ -39,4 +39,30 @@ flights |>
 flights |> 
   distinct(origin, dest) #There are 224 unique origin and destination pairs in this data frame.
 
+flights |>
+  rename(destination = dest) #Renamed the "dest" column to "destination" to clarify what the column represents in case there was some confusion.
 
+
+
+###ASSIGNMENT 2b###
+
+
+
+#The next lines of code answer exercise 3.2.5 question 5.
+
+flights |>
+  relocate(distance) |>
+  arrange(desc(distance)) #Arranged and relocated distance in descending order to determine how far the longest flights were, which ended up being 4983 kilometres long.
+
+flights |>
+  relocate(distance) |>
+  arrange(distance) #Arranged distance in ascending order to determine how short the shortest flight was, which ended up being 17 kilometres.
+
+
+#The next lines of code answer exercise 3.3.5 question 6.
+
+flights |>
+  rename(air_time_min = air_time) |> #Renamed air_time to air_time_min to indicate units of measurement.
+  relocate(air_time_min) #Moved air_time_min to the front, didn't need to specify since relocate() moves variables to the front by default.
+
+#At first, I was getting stuck with trying to use multiple lines of code to do each task, but then I found out using the pipe could help me with doing everything in a more condensed format.
