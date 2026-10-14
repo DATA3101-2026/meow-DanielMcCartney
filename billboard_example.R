@@ -9,7 +9,7 @@ billboard
 billboard <- billboard
 
 
-#----- test out pivot_longer
+#----- test out pivot_longer-----
 bb_long <- billboard |> pivot_longer(
   cols = starts_with("wk"), # taking columns from billboard that start with "wk" to transform.
   names_to = "week",
@@ -29,3 +29,18 @@ example_songs <- bb_long %>%
   filter(track %in% c("Bye Bye Bye", "Kryptonite", "With Arms Wide Open"))
 
 #------- Plot using more ggplot tools
+ggplot(example_songs, aes(x = week, y = rank, group = track, color = track)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2) +
+  #Reverse the Y-axis, ranks start at the very top of the graph, like places in a race
+  scale_y_reverse(breaks = c(1, 10, 20, 50, 100)) +
+  #Look into color brewer
+  scale_color_brewer(palette = "Set1") +
+  labs(
+    title = "Billboard Hot 100 Performance in 2000",
+    subtitle = "Weekly billboard place of selected hit singles",
+    x = "Weeks on Chart",
+    y = "Chart Rank (Top is Higher)",
+    color = "Song Title",
+    caption = "Data Source: tidyr::billboard"
+  )
