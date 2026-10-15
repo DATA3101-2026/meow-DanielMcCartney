@@ -44,3 +44,5 @@ ggplot(example_songs, aes(x = week, y = rank, group = track, color = track)) +
     color = "Song Title",
     caption = "Data Source: tidyr::billboard"
   )
+
+library(styler)
