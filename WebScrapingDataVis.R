@@ -4,38 +4,28 @@ library(httr2) #"no package called httr2" - installed
 library(jsonlite)
 library(purrr)
 library(dplyr)
+library(tidytuesdayR)
+   
+tuesdata <- tidytuesdayR::tt_load('2026-03-31') 
 
-link <- "https://en.wikipedia.org/wiki/List_of_counties_of_Nova_Scotia"
-page <- read_html(link)
+#--- Set up datasets---
+ocean_temperature <- tuesdata$ocean_temperature
+ocean_temperature_deployments <- tuesdata$ocean_temperature_deployments
 
-novaScotiaCounties <- data.frame(page |>
-                          html_element("table.wikitable.sortable") |>
-                          html_table())
+# Create a new dataset that merges the two
+ocean_temp <- cross_join(ocean_temperature, ocean_temperature_deployments, copy = FALSE) |>
+  filter(date >= start_date, date <= end_date) #object 'end_date' not found
 
-#Bring in the table of county names in NS to a df called nsc
-nsc <- data.frame(page |>
-       html_element("table.wikitable.sortable") |>
-       html_table())
+#--------Let's look at the data-----
+library(ggplot2)
 
-library(knitr)
-kable(nsc, caption = "Table scraped from Wikipedia for class, showing
-a list of the counties in Nova Scotia, Canada.")
+ggplot(ocean_temp) +
+  geom_area(mapping=aes(mean_temperature_degree_c, date, colour = deployment_id))
 
-colnames(nsc)
+#change date to x-axis and temperature to y-axis
+ggplot(ocean_temp) +
+  geom_area(mapping=aes(date, mean_temperature_degree_c, colour = deployment_id))
 
-# Let's clean up the 2021 population name
-names(nsc)[names(nsc) == 'Population.2021..7.'] <- 'Population_2021' # What are these square brackets for? - selecting, doing name change
-
-#----What if we want to see which population number is biggest?----
-
-#sc$Population_2021 <- as.numeric(as.character(nsc$Population_2021)) #NAs introduced by coercion, commas do not count as numbers
-
-nsc$Population_2021 <- gsub(",","", nsc$Population_2021) # Remove comma so that there are only numbers in the columns, gsub "substitutes"
-nsc$Population_2021 <- as.numeric(as.character(nsc$Population_2021)) # How does it work now?
-
-max(nsc$Population_2021) #Gives NA value, supposed to give 'Total counties' value - 969,383
-
-#Showing different ways to display the same number of max county population
-max(nsc$Population_2021[1:18]) #First way to select: positive selection range
-max(nsc$Population_2021[-19]) #Second way, removing a row explicitly
-    
+#-----Let's make the colours more smooth----
+ggplot(ocean_temp) +
+  geom_area(mapping=aes(date, mean_temperature_degree_c, colour = deployment_id, fill = deployment_id))
