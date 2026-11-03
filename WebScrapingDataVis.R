@@ -29,3 +29,21 @@ ggplot(ocean_temp) +
 #-----Let's make the colours more smooth----
 ggplot(ocean_temp) +
   geom_area(mapping=aes(date, mean_temperature_degree_c, colour = deployment_id, fill = deployment_id))
+
+#----Add in clear titles and x and y labels-----
+ggplot(ocean_temp) +
+  geom_area(mapping=aes(date, mean_temperature_degree_c, colour = deployment_id, fill = deployment_id)) + 
+  labs(
+    title = "Birchy Cove Ocean Temperatures",
+    subtitle = "Data sourced from TidyTuesday",
+    x = "Date", 
+    y = "Mean Temperatre (deg. C)"
+  )
+
+#------Filter data into one deployment ID-----
+deployment_id_filter <- ocean_temp %>%
+  filter(deployment_id %in% c("depl_08"))
+
+#------Create a line plot of depl_08 for temperature over time------
+ggplot(deployment_id_filter) +
+  geom_line(aes())
